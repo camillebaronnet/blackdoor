@@ -8,7 +8,10 @@ let parser = new ArgumentParser({
     description: '-u http://exploit.test/login.php'
 });
 
-parser.addArgument([ '-u', '--url' ]);
+parser.addArgument(['-u', '--url'], {
+    help: 'The backdoor entrypoint url. Ex: http://exploit.test/login.php',
+    required: true
+});
 
 let args = parser.parseArgs();
 
