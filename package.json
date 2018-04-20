@@ -7,6 +7,7 @@
     "argparse": "^1.0.10",
     "ascii-table": "0.0.9",
     "axios": "^0.18.0",
+    "crypto": "^1.0.1",
     "glob": "^7.1.2",
     "qs": "^6.5.1",
     "shell-parse": "0.0.2",

@@ -5,6 +5,7 @@ var glob = require('glob');
 var axios = require('axios');
 var url = require('url');
 var qs = require('qs');
+var crypto = require('crypto');
 
 class Shell{
 
@@ -14,8 +15,6 @@ class Shell{
 			this.commands.push(file);
 		});
 
-		//console.log(this.commands);
-
 		term.on('key', (key) => {
 			if (key === 'CTRL_C'){
 				this.quit();
@@ -24,8 +23,10 @@ class Shell{
 
 	}
 
-	async init(host, token){
-		if(await this.auth(host, token)){
+	async init(host, token) {
+		token = crypto.createHash('sha1').update(token).digest('hex');
+
+		if (await this.auth(host, token)) {
 			this.welcomeScreen();
 			this.input();
 		}
@@ -42,7 +43,7 @@ class Shell{
 		this.token = token;
 
 		let data = await this.php(`return [
-				'sucess' => true, 
+				'sucess' => true,
 				'pwd' => $_SERVER['DOCUMENT_ROOT'],
 				'whoami' => get_current_user(),
 				'hostname' => gethostname()
