@@ -6,13 +6,14 @@ var axios = require('axios');
 var url = require('url');
 var qs = require('qs');
 var crypto = require('crypto');
+var path = require('path');
 
 class Shell{
 
 	constructor(){
 		this.commands = [];
 		glob('./commands/*.js', (err, file) => {
-			this.commands.push(file);
+			this.commands = file;
 		});
 
 		term.on('key', (key) => {
@@ -49,10 +50,8 @@ class Shell{
 				'hostname' => gethostname()
 		];`);
 
-
         this.user = data.whoami;
         this.hostname = data.hostname;
-
 
 		if(data.sucess !== true){
 			term.red('Connection failed.');
@@ -63,8 +62,8 @@ class Shell{
 		return true;
 	}
 
-	ps1(){
-		term.white(  '╭─').bold.red(this.user+'@'+this.hostname+' ').blue(this.pwd);
+	ps1() {
+		term.white(  '╭─').bold.red(`${this.user}@${this.hostname} `).blue(this.pwd);
 		term.white("\n╰─$ ");
 	}
 
@@ -75,8 +74,9 @@ class Shell{
 			autoComplete : (input, callback) => {
 				let returns = [];
 				if(input.match(/^([a-zA-Z0-9]+)$/)){
-					returns = ['ls', 'cat', 'df', 'du'];
+					returns = this.commands.map(file => path.basename(file, path.extname(file)));
 				}
+
 				callback( undefined , termkit.autoComplete(returns, input, true));
 			},
 			autoCompleteHint: true,
