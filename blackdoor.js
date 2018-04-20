@@ -13,6 +13,12 @@ parser.addArgument(['-u', '--url'], {
     required: true
 });
 
+parser.addArgument(['-p', '--passphrase'], {
+    help: 'The passphrase used to allow access to the backdoor',
+    required: false,
+    defaultValue: ''
+});
+
 let args = parser.parseArgs();
 
 let term = require('terminal-kit').terminal;
@@ -28,4 +34,4 @@ term.inputField({}, (error , raw) => {
 });*/
 
 let s = new shell();
-s.init(args.url, 'dirty_password_hard_coded');
+s.init(args.url, args.passphrase);
