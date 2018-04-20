@@ -1,0 +1,30 @@
+{
+  "name": "blackdoor",
+  "version": "1.0.0",
+  "description": "",
+  "main": "blackdoor.js",
+  "dependencies": {
+    "argparse": "^1.0.10",
+    "ascii-table": "0.0.9",
+    "axios": "^0.18.0",
+    "glob": "^7.1.2",
+    "qs": "^6.5.1",
+    "shell-parse": "0.0.2",
+    "terminal-kit": "^1.15.1",
+    "url": "^0.11.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TZK-/blackdoor.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/TZK-/blackdoor/issues"
+  },
+  "homepage": "https://github.com/TZK-/blackdoor#readme"
+}
