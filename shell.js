@@ -21,12 +21,9 @@ class Shell{
 				this.quit();
 			}
 		});
-
 	}
 
 	async init(host, token) {
-		token = crypto.createHash('sha1').update(token).digest('hex');
-
 		if (await this.auth(host, token)) {
 			this.welcomeScreen();
 			this.input();
@@ -41,7 +38,7 @@ class Shell{
 	async auth(host, token){
 		term.blue('Connecting...\n');
 		this.entrypoint = host;
-		this.token = token;
+		this.token = token = crypto.createHash('sha1').update(token).digest('hex');;
 
 		let data = await this.php(`return [
 				'sucess' => true,
@@ -85,13 +82,24 @@ class Shell{
 		( error , raw ) => {
 			term('\n');
 			let input = parse(raw);
+
 			input.forEach((expression) => {
-				let module = './commands/'+expression.command.value;
-				delete require.cache[require.resolve(module)]
-				let cmd = require(module);
-				cmd.exec(expression, raw, this);
+				this.runExpression(expression, raw);
 			});
 		});
+	}
+
+	async runExpression(expression, raw) {
+		let module = './commands/'+expression.command.value;
+		try {
+			delete require.cache[require.resolve(module)]
+			let cmd = require(module);
+			await cmd.exec(expression, raw, this);
+		} catch (e) {
+			term.red('command not found: ' + expression.command.value);
+			term('\n');
+			this.input();
+		}
 	}
 
 	async php(request){
@@ -120,9 +128,7 @@ class Shell{
 	}
 
 	async sh(cmd, input, after=''){
-		let args = input.args.map((i) => {
-			return i.value;
-		}).join(' ');
+		let args = input.args.map(i => i.value).join(' ');
 
 		/*return await this.stream(`
 			error_reporting(E_ALL);
@@ -142,13 +148,17 @@ class Shell{
 			        flush();
 			    }
 			}`);*/
-		return await this.php(`return shell_exec("`+cmd+` `+args+` `+after+`");`);
+		return await this.php(`return shell_exec("${cmd} ${args} ${after}");`);
 	}
 
 	quit(){
 		term.red('\nQuitting... Bye\n');
 		term.grabInput(false);
 		process.exit();
+	}
+
+	commandFileExist(filepath) {
+		return filepath.inArray(this.commands);
 	}
 }
 
