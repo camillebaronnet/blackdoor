@@ -5,7 +5,6 @@ var glob = require('glob');
 var axios = require('axios');
 var url = require('url');
 var qs = require('qs');
-var crypto = require('crypto');
 var path = require('path');
 
 class Shell{
@@ -38,7 +37,7 @@ class Shell{
 	async auth(host, token){
 		term.blue('Connecting...\n');
 		this.entrypoint = host;
-		this.token = token = crypto.createHash('sha1').update(token).digest('hex');;
+		this.token = token;
 
 		let data = await this.php(`return array(
 				'sucess' => true, 
