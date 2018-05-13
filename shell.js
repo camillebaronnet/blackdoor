@@ -1,11 +1,10 @@
-var term = require('terminal-kit').terminal;
-var termkit = require('terminal-kit');
-var parse = require('shell-parse');
-var glob = require('glob');
-var axios = require('axios');
-var url = require('url');
-var qs = require('qs');
-var path = require('path');
+const term = require('terminal-kit').terminal,
+	termkit = require('terminal-kit'),
+	parse = require('shell-parse'),
+	glob = require('glob'),
+	axios = require('axios'),
+	qs = require('qs'),
+    path = require('path');
 
 class Shell{
 
@@ -17,7 +16,7 @@ class Shell{
 
 		term.on('key', (key) => {
 			if (key === 'CTRL_C'){
-				this.quit();
+				this.input();
 			}
 		});
 	}
@@ -91,7 +90,7 @@ class Shell{
 	async runExpression(expression, raw) {
 		let module = './commands/'+expression.command.value;
 		try {
-			delete require.cache[require.resolve(module)]
+			delete require.cache[require.resolve(module)];
 			let cmd = require(module);
 			await cmd.exec(expression, raw, this);
 		} catch (e) {
@@ -159,10 +158,6 @@ class Shell{
 		term.red('\nQuitting... Bye\n');
 		term.grabInput(false);
 		process.exit();
-	}
-
-	commandFileExist(filepath) {
-		return filepath.inArray(this.commands);
 	}
 }
 
