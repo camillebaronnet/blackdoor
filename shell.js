@@ -16,6 +16,7 @@ class Shell{
 
 		term.on('key', (key) => {
 			if (key === 'CTRL_C'){
+                term('\n');
 				this.input();
 			}
 		});
@@ -29,7 +30,7 @@ class Shell{
 	}
 
 	welcomeScreen(){
-		term.white('\nWelcome on ').bold.red('CrazybackDoor').white(' client!\n');
+		term.white('\nWelcome on ').bold.red('Blackdoor').white(' client!\n');
 		term.white('You are connecting from : ').blue(this.entrypoint+'\n\n');
 	}
 
