@@ -4,7 +4,9 @@ const term = require('terminal-kit').terminal,
 	glob = require('glob'),
 	axios = require('axios'),
 	qs = require('qs'),
-    path = require('path');
+    path = require('path'),
+	fs = require('fs');
+
 
 class Shell{
 
@@ -25,7 +27,13 @@ class Shell{
 	async init(host, token) {
 		if (await this.auth(host, token)) {
 			this.welcomeScreen();
-			this.input();
+            fs.readFile(this.sessionDir+'/history', 'utf8', (err,data) => {
+                if (err) {
+                    this.history = [];
+                }
+                this.history = data.trim().split('\n');
+                this.input();
+            });
 		}
 	}
 
@@ -49,8 +57,8 @@ class Shell{
 
         this.user = data.whoami;
         this.hostname = data.hostname;
-        this.history = [];
-		this.sessionDir = process.env[(process.platform === 'win32') ? 'USERPROFILE' : 'HOME']+'/.blackdoor/'+this.hostname;
+        this.sessionDir = process.env[(process.platform === 'win32') ? 'USERPROFILE' : 'HOME']+'/.blackdoor/'+this.hostname;
+
 
 		if(data.sucess !== true){
 			term.red('Connection failed.');
@@ -70,10 +78,17 @@ class Shell{
 		this.ps1();
 
 		term.inputField({
+			history: this.history,
 			autoComplete : (input, callback) => {
 				let returns = [];
-				if(input.match(/^([a-zA-Z0-9]+)$/)){
+				let matches;
+				// Autocomplet command
+				if(input.match(/^([a-zA-Z0-9_-]+)$/)){
 					returns = this.commands.map(file => path.basename(file, path.extname(file)));
+				}
+				// Autocomplet path
+				else if(matches = input.match(/ ([^ ]+)$/)){
+					// todo
 				}
 
 				callback( undefined , termkit.autoComplete(returns, input, true));
@@ -83,6 +98,15 @@ class Shell{
 		} ,
 		( error , raw ) => {
 			term('\n');
+
+			if(raw === ''){
+				this.input();
+				return;
+			}
+
+            this.history.push(raw);
+            fs.appendFile(this.sessionDir+'/history', raw+'\n', function(){});
+
 			let input = parse(raw);
 
 			input.forEach((expression) => {
