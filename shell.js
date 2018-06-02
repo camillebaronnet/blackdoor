@@ -122,8 +122,9 @@ class Shell{
 			delete require.cache[require.resolve(module)];
             cmd = require(module);
 		} catch (e) {
-			term.red('command not found: ' + expression.command.value);
-			term('\n');
+
+            let output = await this.sh(expression.command.value, expression);
+            term(output);
 			this.input();
 			return;
 		}
