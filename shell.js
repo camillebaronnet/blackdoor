@@ -90,15 +90,24 @@ class Shell{
 
 	async runExpression(expression, raw) {
 		let module = './commands/'+expression.command.value;
+		let cmd;
 		try {
 			delete require.cache[require.resolve(module)];
-			let cmd = require(module);
-			await cmd.exec(expression, raw, this);
+            cmd = require(module);
 		} catch (e) {
 			term.red('command not found: ' + expression.command.value);
 			term('\n');
 			this.input();
+			return;
 		}
+
+        try {
+        	await cmd.exec(expression, raw, this);
+        } catch (e) {
+            term.red(e);
+            term('\n');
+            this.input();
+        }
 	}
 
 	async call(c){
@@ -131,7 +140,7 @@ class Shell{
 		return result;
 	}
 
-	async sh(cmd, input, after=''){
+	async sh(cmd, input={'args':[]}, after=''){
 		let args = input.args.map(i => i.value).join(' ');
 
 		/*return await this.stream(`
