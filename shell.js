@@ -31,7 +31,9 @@ class Shell{
                 if (err) {
                     this.history = [];
                 }
-                this.history = data.trim().split('\n');
+                else{
+                    this.history = data.trim().split('\n');
+				}
                 this.input();
             });
 		}
