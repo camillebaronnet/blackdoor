@@ -19,12 +19,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/TZK-/blackdoor.git"
+    "url": "git+https://github.com/camillebaronnet/blackdoor.git"
   },
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/TZK-/blackdoor/issues"
+    "url": "https://github.com/camillebaronnet/blackdoor/issues"
   },
-  "homepage": "https://github.com/TZK-/blackdoor#readme"
+  "homepage": "https://github.com/camillebaronnet/blackdoor#readme"
 }
